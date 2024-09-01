@@ -4,7 +4,7 @@
 
 // Mint Suitizen Card <br>
 packMintTxb <br>
-```json
+```
 Request :
   suiNs: string, <-- 用戶 Sui Name Service NFT Object ID
   index: number, <-- Random index, 需先呼叫 checkIndexExist 確認 index 不存在
@@ -19,7 +19,7 @@ Transcation Block
 
 // New Vote Proposal & New Discuss Proposal <br>
 packNewProposalTxb <br>
-```json
+```
 Request :
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
   category: number, <-- Vote 帶 0, Discuss 帶 1
@@ -34,7 +34,7 @@ Transcation Block
 
 // Vote <br>
 packVoteTxb <br>
-```json
+```
 Request :
   proposalId: string, <-- packNewProposalTxb 執行完後，呼叫 getProposal，回傳物件內 data 迴圈內物件的 objectId 欄位
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
@@ -47,7 +47,7 @@ Transcation Block
 
 // Discuss <br>
 packDiscussTxb <br>
-```json
+```
 Request :
   proposalId: string, <-- packNewProposalTxb 執行完後，呼叫 getProposal，回傳物件內 data 迴圈內物件的 objectId 欄位
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
@@ -62,7 +62,7 @@ Transcation Block
 
 // 取得用戶的 Sui Name Service NFT List <br>
 getUserSuiNS <br>
-```json
+```
 Request :
   address: string <-- 用戶的錢包地址
 
@@ -79,7 +79,7 @@ Response :
 
 // 取得用戶 Suitizen Card <br>
 getUserSuitizenCard <br>
-```json
+```
 Request :
   address: string <-- 用戶的錢包地址
 
@@ -98,7 +98,7 @@ Response :
 
 // 檢查 index 是否存在，return true 為 已存在，false 為不存在 <br>
 checkIndexExist <br>
-```json
+```
 Request :
   index: number
 
@@ -109,7 +109,7 @@ true or false
 
 // 取得 Vote & Discuss Proposal <br>
 getProposal <br>
-```json
+```
 Request:
   category: number, <-- Vote 帶 0，Discuss 帶 1
   cursor: string | null, <-- 第一頁帶 null，回傳物件會給 nextCursor，帶入會給下一頁的資訊
