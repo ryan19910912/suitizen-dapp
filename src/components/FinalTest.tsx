@@ -8,11 +8,13 @@ import {
   checkIndexExist,
   getUserSuitizenCard,
   getProposal,
+  packTakeUserSuiNsTxb
 } from '../api/sui_api';
 import { useState, useEffect } from 'react';
 
 export function FinalTest() {
 
+  let [userNsId, setUserNsId] = useState("");
   let [userSuitizenCardId, setUserSuitizenCardId] = useState("");
   let [voteId, setVoteId] = useState("");
   let [voteOptionNum, setVoteOptionNum] = useState(1);
@@ -28,18 +30,31 @@ export function FinalTest() {
         console.log(account);
         let userSuiNsList = await getUserSuiNS(account.address);
         console.log(userSuiNsList);
+        if (userSuiNsList.length > 0){
+          setUserNsId(userSuiNsList[0].objectId);
+        }
+
         await checkIndexExist(0);
+
         let userSuitizenCardList = await getUserSuitizenCard(account.address);
         console.log(userSuitizenCardList);
-        setUserSuitizenCardId(userSuitizenCardList[0].objectId);
-        let voteVo = await getProposal(0, null, null);
+        if (userSuitizenCardList.length > 0){
+          setUserSuitizenCardId(userSuitizenCardList[0].objectId);
+        }
+
+        let voteVo = await getProposal(0, null, 2);
         console.log(voteVo);
-        setVoteId(voteVo.data[0].objectId);
-        setVoteOptionNum(voteVo.data[0].options[2].index);
-        let discussVo = await getProposal(1, null, null);
+        if (voteVo.data.length > 0){
+          setVoteId(voteVo.data[0].objectId);
+          setVoteOptionNum(voteVo.data[0].options[0].index);
+        }
+
+        let discussVo = await getProposal(1, null, 2);
         console.log(discussVo);
-        setDiscussId(discussVo.data[0].objectId);
-        setDiscussContent("Ryan Test");
+        if (discussVo.data.length > 0){
+          setDiscussId(discussVo.data[0].objectId);
+          setDiscussContent("Resign !!");
+        }
       }
     }
     run();
@@ -49,7 +64,7 @@ export function FinalTest() {
     <>
       <div>
         <button onClick={() => packMintTxb(
-          "0xa388886c2add9fa5d51cb212bf435a90e5ab7bb615877bc7745078d77445f67f",
+          userNsId,
           0,
           "isAUu8t8u0bMCp1r4ZKeIRvpKdN-ivDY0yILn2Hj5J8",
           "isAUu8t8u0bMCp1r4ZKeIRvpKdN-ivDY0yILn2Hj5J8",
@@ -86,11 +101,13 @@ export function FinalTest() {
         <button onClick={() => packNewProposalTxb(
           userSuitizenCardId,
           0,
-          "test vote topic",
-          "test vote description",
+          "Choose ~",
+          "What do you do on holidays ?",
           [
-            "option 1",
-            "option 2"
+            "Eat delicious snacks",
+            "Play basketball",
+            "Watch TV",
+            "Play games"
           ]
         ).then((txb: any) => {
           if (txb) {
@@ -124,8 +141,8 @@ export function FinalTest() {
         <button onClick={() => packNewProposalTxb(
           userSuitizenCardId,
           1,
-          "test discuss topic 1",
-          "test discuss description 1",
+          "talk now",
+          "Software engineer talks about hardships",
           []
         ).then((txb: any) => {
           if (txb) {
@@ -219,6 +236,37 @@ export function FinalTest() {
           }
         })}>
           Discuss
+        </button>
+      </div>
+      <div>
+        <button onClick={() => packTakeUserSuiNsTxb(
+          userSuitizenCardId
+        ).then((txb: any) => {
+          if (txb) {
+            signAndExecuteTransactionBlock(
+              {
+                transactionBlock: txb,
+                options: {
+                  showBalanceChanges: true,
+                  showObjectChanges: true,
+                  showEvents: true,
+                  showEffects: true,
+                  showInput: true,
+                  showRawInput: true
+                }
+              },
+              {
+                onSuccess: (successResult) => {
+                  console.log('packTakeUserSuiNsTxb success', successResult);
+                },
+                onError: (errorResult) => {
+                  console.error('packTakeUserSuiNsTxb error', errorResult);
+                },
+              },
+            );
+          }
+        })}>
+          Take User Sui Ns
         </button>
       </div>
     </>

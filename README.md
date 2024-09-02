@@ -58,6 +58,17 @@ Transcation Block
 
 ```
 
+// 拿回用戶的 Sui Name Service NFT <br>
+packTakeUserSuiNsTxb <br>
+```
+Request :
+  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
+
+Response :
+Transcation Block
+
+```
+
 <h3> Get Data Api </h3>
 
 // 取得用戶的 Sui Name Service NFT List <br>

@@ -17,6 +17,7 @@ const MINT_FUN: string = "mint";
 const NEW_PROPOSAL_FUN: string = "new_proposal";
 const VOTE_FUN: string = "vote";
 const DISCUSS_FUN: string = "discuss";
+const TAKE_SUI_NS: string = "take_sui_ns";
 
 const SUI_CLOCK_ID: string = "0x6";
 const SUI_NS_TYPE = `${import.meta.env.VITE_SUI_NS_TYPE}`;
@@ -133,6 +134,23 @@ export async function packDiscussTxb(
 
   txb.moveCall({
     target: `${PACKAGE_ID}::${PROPOSAL_MODULE}::${DISCUSS_FUN}`,
+    arguments: args
+  });
+
+  return txb;
+}
+
+export async function packTakeUserSuiNsTxb(
+  cardId: string
+) {
+  let txb: TransactionBlock = new TransactionBlock();
+
+  let args: TransactionArgument[] = [
+    txb.object(cardId)
+  ];
+
+  txb.moveCall({
+    target: `${PACKAGE_ID}::${SUITIZEN_MODULE}::${TAKE_SUI_NS}`,
     arguments: args
   });
 
