@@ -14,6 +14,8 @@
     "@mysten/dapp-kit": "^0.12.10",
     "@mysten/sui.js": "0.52.0",
     "@tanstack/react-query": "^5.34.2",
+    "buffer": "^6.0.3",
+    "firebase": "^10.13.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

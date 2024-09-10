@@ -1,14 +1,22 @@
 import { useCurrentAccount, useSignAndExecuteTransactionBlock } from "@mysten/dapp-kit";
 import {
   packMintTxb,
-  packNewProposalTxb,
+  packNewInteractionTxb,
   packVoteTxb,
   packDiscussTxb,
   getUserSuiNS,
   checkIndexExist,
   getUserSuitizenCard,
-  getProposal,
-  packTakeUserSuiNsTxb
+  getInteraction,
+  packTakeUserSuiNsTxb,
+  packAddGuardianTxb,
+  packRemoveGuardianTxb,
+  packNewTransferRequestTxb,
+  getTransferRequestList,
+  packCancelTransferRequestTxb,
+  packConfirmTxb,
+  packCancelConfirmTxb,
+  packTransferCardTxb
 } from '../api/sui_api';
 import { useState, useEffect } from 'react';
 
@@ -20,6 +28,9 @@ export function FinalTest() {
   let [voteOptionNum, setVoteOptionNum] = useState(1);
   let [discussId, setDiscussId] = useState("");
   let [discussContent, setDiscussContent] = useState("");
+  let [guardian, setGuardian] = useState("0xc10c5840b08ff872e6837471c09c442f5575b9ceea952d0105fbeac6b0e22a05");
+  let [newOwner, setNewOwner] = useState("0xe20abce08a16e397ec368979b03bb6323d42605b38c6bd9b6a983c6ebcc45e11");
+  let [requestId, setRequestId] = useState("");
 
   const account = useCurrentAccount();
   const { mutate: signAndExecuteTransactionBlock } = useSignAndExecuteTransactionBlock();
@@ -42,18 +53,26 @@ export function FinalTest() {
           setUserSuitizenCardId(userSuitizenCardList[0].objectId);
         }
 
-        let voteVo = await getProposal(0, null, 2);
+        let voteVo = await getInteraction(0, null, 2);
         console.log(voteVo);
         if (voteVo.data.length > 0){
           setVoteId(voteVo.data[0].objectId);
           setVoteOptionNum(voteVo.data[0].options[0].index);
         }
 
-        let discussVo = await getProposal(1, null, 2);
+        let discussVo = await getInteraction(1, null, 2);
         console.log(discussVo);
         if (discussVo.data.length > 0){
           setDiscussId(discussVo.data[0].objectId);
           setDiscussContent("Resign !!");
+        }
+
+        if (userSuitizenCardList.length > 0){
+          let requestVoList = await getTransferRequestList(userSuitizenCardList[0].objectId);
+          console.log(requestVoList);
+          if (requestVoList.length > 0){
+            setRequestId(requestVoList[0].objectId);
+          }
         }
       }
     }
@@ -65,10 +84,11 @@ export function FinalTest() {
       <div>
         <button onClick={() => packMintTxb(
           userNsId,
-          0,
-          "isAUu8t8u0bMCp1r4ZKeIRvpKdN-ivDY0yILn2Hj5J8",
-          "isAUu8t8u0bMCp1r4ZKeIRvpKdN-ivDY0yILn2Hj5J8",
-          "isAUu8t8u0bMCp1r4ZKeIRvpKdN-ivDY0yILn2Hj5J8"
+          3,
+          "1ztpOD7U5VChSoTpMlLZPQrjo9ETTjtt1bgWS3UoxIY",
+          "1ztpOD7U5VChSoTpMlLZPQrjo9ETTjtt1bgWS3UoxIY",
+          "1ztpOD7U5VChSoTpMlLZPQrjo9ETTjtt1bgWS3UoxIY",
+          Date.now()
         ).then((txb: any) => {
           if (txb) {
             signAndExecuteTransactionBlock(
@@ -98,7 +118,7 @@ export function FinalTest() {
         </button>
       </div>
       <div>
-        <button onClick={() => packNewProposalTxb(
+        <button onClick={() => packNewInteractionTxb(
           userSuitizenCardId,
           0,
           "Choose ~",
@@ -134,11 +154,11 @@ export function FinalTest() {
             );
           }
         })}>
-          New Vote Proposal
+          New Vote Interaction
         </button>
       </div>
       <div>
-        <button onClick={() => packNewProposalTxb(
+        <button onClick={() => packNewInteractionTxb(
           userSuitizenCardId,
           1,
           "talk now",
@@ -169,7 +189,7 @@ export function FinalTest() {
             );
           }
         })}>
-          New Discuss Proposal
+          New Discuss Interaction
         </button>
       </div>
       <div>
@@ -267,6 +287,230 @@ export function FinalTest() {
           }
         })}>
           Take User Sui Ns
+        </button>
+      </div>
+      <div>
+        <button onClick={() => packAddGuardianTxb(
+          userSuitizenCardId,
+          guardian
+        ).then((txb: any) => {
+          if (txb) {
+            signAndExecuteTransactionBlock(
+              {
+                transactionBlock: txb,
+                options: {
+                  showBalanceChanges: true,
+                  showObjectChanges: true,
+                  showEvents: true,
+                  showEffects: true,
+                  showInput: true,
+                  showRawInput: true
+                }
+              },
+              {
+                onSuccess: (successResult) => {
+                  console.log('packAddGuardianTxb success', successResult);
+                },
+                onError: (errorResult) => {
+                  console.error('packAddGuardianTxb error', errorResult);
+                },
+              },
+            );
+          }
+        })}>
+          Add Guardian
+        </button>
+      </div>
+      <div>
+        <button onClick={() => packRemoveGuardianTxb(
+          userSuitizenCardId,
+          guardian
+        ).then((txb: any) => {
+          if (txb) {
+            signAndExecuteTransactionBlock(
+              {
+                transactionBlock: txb,
+                options: {
+                  showBalanceChanges: true,
+                  showObjectChanges: true,
+                  showEvents: true,
+                  showEffects: true,
+                  showInput: true,
+                  showRawInput: true
+                }
+              },
+              {
+                onSuccess: (successResult) => {
+                  console.log('packRemoveGuardianTxb success', successResult);
+                },
+                onError: (errorResult) => {
+                  console.error('packRemoveGuardianTxb error', errorResult);
+                },
+              },
+            );
+          }
+        })}>
+          Remove Guardian
+        </button>
+      </div>
+      <div>
+        <button onClick={() => packNewTransferRequestTxb(
+          userSuitizenCardId,
+          newOwner
+        ).then((txb: any) => {
+          if (txb) {
+            signAndExecuteTransactionBlock(
+              {
+                transactionBlock: txb,
+                options: {
+                  showBalanceChanges: true,
+                  showObjectChanges: true,
+                  showEvents: true,
+                  showEffects: true,
+                  showInput: true,
+                  showRawInput: true
+                }
+              },
+              {
+                onSuccess: (successResult) => {
+                  console.log('packNewTransferRequestTxb success', successResult);
+                },
+                onError: (errorResult) => {
+                  console.error('packNewTransferRequestTxb error', errorResult);
+                },
+              },
+            );
+          }
+        })}>
+          New Transfer Request
+        </button>
+      </div>
+      <div>
+        <button onClick={() => packCancelTransferRequestTxb(
+          userSuitizenCardId,
+          requestId
+        ).then((txb: any) => {
+          if (txb) {
+            signAndExecuteTransactionBlock(
+              {
+                transactionBlock: txb,
+                options: {
+                  showBalanceChanges: true,
+                  showObjectChanges: true,
+                  showEvents: true,
+                  showEffects: true,
+                  showInput: true,
+                  showRawInput: true
+                }
+              },
+              {
+                onSuccess: (successResult) => {
+                  console.log('packCancelTransferRequestTxb success', successResult);
+                },
+                onError: (errorResult) => {
+                  console.error('packCancelTransferRequestTxb error', errorResult);
+                },
+              },
+            );
+          }
+        })}>
+          Cancel Transfer Request
+        </button>
+      </div>
+      <div>
+        <button onClick={() => packConfirmTxb(
+          userSuitizenCardId,
+          requestId
+        ).then((txb: any) => {
+          if (txb) {
+            signAndExecuteTransactionBlock(
+              {
+                transactionBlock: txb,
+                options: {
+                  showBalanceChanges: true,
+                  showObjectChanges: true,
+                  showEvents: true,
+                  showEffects: true,
+                  showInput: true,
+                  showRawInput: true
+                }
+              },
+              {
+                onSuccess: (successResult) => {
+                  console.log('packConfirmTxb success', successResult);
+                },
+                onError: (errorResult) => {
+                  console.error('packConfirmTxb error', errorResult);
+                },
+              },
+            );
+          }
+        })}>
+          Confirm
+        </button>
+      </div>
+      <div>
+        <button onClick={() => packCancelConfirmTxb(
+          userSuitizenCardId,
+          requestId
+        ).then((txb: any) => {
+          if (txb) {
+            signAndExecuteTransactionBlock(
+              {
+                transactionBlock: txb,
+                options: {
+                  showBalanceChanges: true,
+                  showObjectChanges: true,
+                  showEvents: true,
+                  showEffects: true,
+                  showInput: true,
+                  showRawInput: true
+                }
+              },
+              {
+                onSuccess: (successResult) => {
+                  console.log('packCancelConfirmTxb success', successResult);
+                },
+                onError: (errorResult) => {
+                  console.error('packCancelConfirmTxb error', errorResult);
+                },
+              },
+            );
+          }
+        })}>
+          Cancel Confirm
+        </button>
+      </div>
+      <div>
+        <button onClick={() => packTransferCardTxb(
+          userSuitizenCardId,
+          requestId
+        ).then((txb: any) => {
+          if (txb) {
+            signAndExecuteTransactionBlock(
+              {
+                transactionBlock: txb,
+                options: {
+                  showBalanceChanges: true,
+                  showObjectChanges: true,
+                  showEvents: true,
+                  showEffects: true,
+                  showInput: true,
+                  showRawInput: true
+                }
+              },
+              {
+                onSuccess: (successResult) => {
+                  console.log('packTransferCardTxb success', successResult);
+                },
+                onError: (errorResult) => {
+                  console.error('packTransferCardTxb error', errorResult);
+                },
+              },
+            );
+          }
+        })}>
+          Transfer Card
         </button>
       </div>
     </>

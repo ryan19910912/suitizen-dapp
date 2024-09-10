@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "@mysten/dapp-kit/dist/index.css";
-// import "@radix-ui/themes/styles.css";
+import { Buffer } from "buffer/";
+window.Buffer = window.Buffer || Buffer;
 
 import { getFullnodeUrl } from "@mysten/sui.js/client";
 import {

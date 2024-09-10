@@ -11,14 +11,15 @@ Request :
   pfpImg: string, <-- walrus blobId
   cardImg: string, <-- walrus blobId
   faceFeature: string <-- walrus blobId
+  birth: number <-- 生日(timestamp 毫秒)
 
 Response :
 Transcation Block
 
 ```
 
-// New Vote Proposal & New Discuss Proposal <br>
-packNewProposalTxb <br>
+// New Vote Interaction & New Discuss Interaction <br>
+packNewInteractionTxb <br>
 ```
 Request :
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
@@ -36,7 +37,7 @@ Transcation Block
 packVoteTxb <br>
 ```
 Request :
-  proposalId: string, <-- packNewProposalTxb 執行完後，呼叫 getProposal，回傳物件內 data 迴圈內物件的 objectId 欄位
+  proposalId: string, <-- packNewInteractionTxb 執行完後，呼叫 getProposal，回傳物件內 data 迴圈內物件的 objectId 欄位
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
   voteOption: number <-- data 迴圈內物件的 options 迴圈內物件的 index 欄位
 
@@ -49,7 +50,7 @@ Transcation Block
 packDiscussTxb <br>
 ```
 Request :
-  proposalId: string, <-- packNewProposalTxb 執行完後，呼叫 getProposal，回傳物件內 data 迴圈內物件的 objectId 欄位
+  proposalId: string, <-- packNewInteractionTxb 執行完後，呼叫 getProposal，回傳物件內 data 迴圈內物件的 objectId 欄位
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
   content: string <-- 留言內容
 
@@ -63,6 +64,92 @@ packTakeUserSuiNsTxb <br>
 ```
 Request :
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
+
+Response :
+Transcation Block
+
+```
+
+// 新增 監護人 <br>
+packAddGuardianTxb <br>
+```
+Request :
+  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
+  guardianCardId: string <-- 監護人 Suitizen Card ID
+
+Response :
+Transcation Block
+
+```
+
+// 移除 監護人 <br>
+packRemoveGuardianTxb <br>
+```
+Request :
+  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
+  guardianCardId: string <-- 監護人 Suitizen Card ID
+
+Response :
+Transcation Block
+
+```
+
+// 建立 轉移 Suitizen Card Owner 請求<br>
+packNewTransferRequestTxb <br>
+```
+Request :
+  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
+  newOwnerAddress: string <-- 轉移 Suitizen Card 給該 新Owner地址
+
+Response :
+Transcation Block
+
+```
+
+// 取消 轉移 Suitizen Card Owner 請求<br>
+packCancelTransferRequestTxb <br>
+```
+Request :
+  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
+  requestId: string <-- getTransferRequestList 清單裡面的 objectId
+
+Response :
+Transcation Block
+
+```
+
+// 監護人 確認 轉移 Suitizen Card Owner 請求<br>
+packConfirmTxb <br>
+```
+Request :
+  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
+  requestId: string <-- getTransferRequestList 清單裡面的 objectId
+
+Response :
+Transcation Block
+
+```
+
+// 監護人 反對 轉移 Suitizen Card Owner 請求<br>
+packCancelConfirmTxb <br>
+```
+Request :
+  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
+  requestId: string <-- getTransferRequestList 清單裡面的 objectId
+
+Response :
+Transcation Block
+
+```
+
+// 轉移 Suitizen Card 給 新 owner<br>
+packTransferCardTxb <br>
+```
+當 currentConfirm (目前通過票數) >= confirmThreshold (需通過票數)
+
+Request :
+  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
+  requestId: string <-- getTransferRequestList 清單裡面的 objectId
 
 Response :
 Transcation Block
@@ -97,11 +184,15 @@ Request :
 Response :
 [
   {
-    "objectId": "0x211060bd182b88702f745a921f74efd787a833ef04402d30f7e9642c6d2fcf3a",
-    "cardImg": "isAUu8t8u0bMCp1r4ZKeIRvpKdN-ivDY0yILn2Hj5J8",
-    "faceFeature": "isAUu8t8u0bMCp1r4ZKeIRvpKdN-ivDY0yILn2Hj5J8",
+    "objectId": "0xc10c5840b08ff872e6837471c09c442f5575b9ceea952d0105fbeac6b0e22a05",
+    "cardImg": "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
+    "faceFeature": "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
     "firstName": "sui",
-    "lastName": "ryan-hsu"
+    "lastName": "ryan-hsu-test",
+    "birth": "1725985950997",
+    "guardians": [
+        "0x3e37b4d2d3abe229932a68e5f5bb0987ce779f794bb45fc758bc26152ff62b4d"
+    ]
   }
 ]
 
@@ -118,8 +209,8 @@ true or false
 
 ```
 
-// 取得 Vote & Discuss Proposal <br>
-getProposal <br>
+// 取得 Vote & Discuss Interaction <br>
+getInteraction <br>
 ```
 Request:
   category: number, <-- Vote 帶 0，Discuss 帶 1
@@ -130,70 +221,73 @@ Response:
 
 Vote
 {
-  "hasNextPage": false,
-  "nextCursor": "0x424bf718e7c7e6191f4aeb3a11260ea28160d7e762e7a409962e4bf9160eb431",
-  "data": [
-    {
-      "category": "0",
-      "categoryStr": "VOTE",
-      "topic": "Lunch?",
-      "description": "Guess what I want to eat ?",
-      "flowNum": "0",
-      "proposer": "0x14859ca57faa6ab08f81565946dda5a845835b619694dff9a673bc22ef27394c",
-      "objectId": "0xcf6f9e28832b20bd79de62094999d0570b10d7da76b35b484232ede97e29f526",
-      "options": [
+    "category": "0",
+    "categoryStr": "VOTE",
+    "topic": "Choose ~",
+    "description": "What do you do on holidays ?",
+    "flowNum": "0",
+    "objectId": "0x93ee358c1d49dff00c2a90b061e13768cebe1e06981180ecb028e04cea94ba85",
+    "lastUpdate": "1725986530255",
+    "options": [
         {
-          "index": 0, <-- 選項index
-          "amount": "1", <-- 選項被投票次數
-          "content": "A" <-- 選項內容
+            "index": 0,
+            "amount": "1",
+            "content": "Eat delicious snacks"
         },
         {
-          "index": 1,
-          "amount": "0",
-          "content": "B"
+            "index": 1,
+            "amount": "0",
+            "content": "Play basketball"
         },
         {
-          "index": 2,
-          "amount": "0",
-          "content": "C"
+            "index": 2,
+            "amount": "0",
+            "content": "Watch TV"
         },
         {
-          "index": 3,
-          "amount": "0",
-          "content": "D"
+            "index": 3,
+            "amount": "0",
+            "content": "Play games"
         }
-      ]
-    }
-  ]
+    ]
 }
 
 Discuss
 {
-  "hasNextPage": false,
-  "nextCursor": "0x9b229dc9124b08bbc68b05e478530825a5fc8bf14d608edd38dca0edad9f58ac",
-  "data": [
-    {
-      "category": "1",
-      "categoryStr": "DISCUSS",
-      "topic": "test discuss topic",
-      "description": "test discuss description",
-      "flowNum": "0",
-      "proposer": "0x211060bd182b88702f745a921f74efd787a833ef04402d30f7e9642c6d2fcf3a",
-      "objectId": "0x5f8327175ec8c21832371272793b53bf2061f214fa0b85f0b6e6cdd01eb84762",
-      "comments": [
+    "category": "1",
+    "categoryStr": "DISCUSS",
+    "topic": "talk now",
+    "description": "Software engineer talks about hardships",
+    "flowNum": "0",
+    "objectId": "0x858ca8657f4b74b1b8f9b4ad6e91540eff3c5b71ad256e60e275be1407d5cb03",
+    "lastUpdate": "1725986536972",
+    "comments": [
         {
-          "name": "sui Ryan", <-- 留言用戶 Suitizen Card 名稱
-          "content": "hello test", <-- 留言內容
-          "sender": "0x211060bd182b88702f745a921f74efd787a833ef04402d30f7e9642c6d2fcf3a"
-        },
-        {
-          "name": "sui Ryan",
-          "content": "Ryan Test",
-          "sender": "0x211060bd182b88702f745a921f74efd787a833ef04402d30f7e9642c6d2fcf3a"
+            "name": "sui ryan-hsu-1991-09-12",
+            "content": "Resign !!",
+            "sender": "0x3e37b4d2d3abe229932a68e5f5bb0987ce779f794bb45fc758bc26152ff62b4d"
         }
-      ]
-    }
-  ]
+    ]
+}
+
+```
+
+// 取得 該用戶所有提交的 Suitizen Card 轉移請求 清單 <br>
+getTransferRequestList <br>
+```
+Request :
+  cardId: string <-- 該用戶的 Suitizen Card ID
+
+Response :
+{
+    "cardId": "0x572092b0339cdedc3c2c442d49e41957e1815c0b909acdde410d1f3f0eea63bf", <-- 該用戶的 Suitizen Card ID
+    "confirmThreshold": "1", <-- 需通過票數
+    "currentConfirm": "0", <-- 目前通過票數
+    "guardians": [
+        "0x3e37b4d2d3abe229932a68e5f5bb0987ce779f794bb45fc758bc26152ff62b4d" <-- 監護人 card id
+    ],
+    "newOwner": "0xe20abce08a16e397ec368979b03bb6323d42605b38c6bd9b6a983c6ebcc45e11", <-- 新 owner address
+    "objectId": "0x64b5c21f35024bc6046fad46f58f41a121558756ba2aead65574b86e46c8ec7c" <-- 該物件的 object id
 }
 
 ```
