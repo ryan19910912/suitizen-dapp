@@ -447,7 +447,7 @@ export async function packAddGuardianTxb(
   guardianName: string
 ) {
 
-  let guardianCardId = await getCardByGuardianName(guardianName);
+  let guardianCardId = await getCardByGuardianName("sui"+guardianName);
 
   if (guardianCardId == null){
     throw new Error(guardianName + " Not Found");
@@ -476,7 +476,7 @@ export async function packRemoveGuardianTxb(
   guardianName: string
 ) {
 
-  let guardianCardId = await getCardByGuardianName(guardianName);
+  let guardianCardId = await getCardByGuardianName("sui"+guardianName);
 
   if (guardianCardId == null){
     throw new Error(guardianName + " Not Found");

@@ -29,7 +29,7 @@ export function FinalTest() {
   let [voteOptionNum, setVoteOptionNum] = useState(1);
   let [discussId, setDiscussId] = useState("");
   let [discussContent, setDiscussContent] = useState("");
-  let [guardianName, setGuardianName] = useState("suiryan-hsu-test-1");
+  let [guardianName, setGuardianName] = useState("ryan-hsu-test-1");
   let [newOwner, setNewOwner] = useState("0xe20abce08a16e397ec368979b03bb6323d42605b38c6bd9b6a983c6ebcc45e11");
   let [requestId, setRequestId] = useState("");
 
