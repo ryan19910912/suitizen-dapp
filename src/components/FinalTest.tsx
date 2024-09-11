@@ -16,7 +16,8 @@ import {
   packCancelTransferRequestTxb,
   packConfirmTxb,
   packCancelConfirmTxb,
-  packTransferCardTxb
+  packTransferCardTxb,
+  getCardByGuardianName
 } from '../api/sui_api';
 import { useState, useEffect } from 'react';
 
@@ -28,12 +29,19 @@ export function FinalTest() {
   let [voteOptionNum, setVoteOptionNum] = useState(1);
   let [discussId, setDiscussId] = useState("");
   let [discussContent, setDiscussContent] = useState("");
-  let [guardian, setGuardian] = useState("0xc10c5840b08ff872e6837471c09c442f5575b9ceea952d0105fbeac6b0e22a05");
+  let [guardianName, setGuardianName] = useState("suiryan-hsu-test-1");
   let [newOwner, setNewOwner] = useState("0xe20abce08a16e397ec368979b03bb6323d42605b38c6bd9b6a983c6ebcc45e11");
   let [requestId, setRequestId] = useState("");
 
   const account = useCurrentAccount();
   const { mutate: signAndExecuteTransactionBlock } = useSignAndExecuteTransactionBlock();
+
+  // TODO
+  useEffect(() => {
+    // 初始化 Interaction 數據，存入 firebase
+
+  }, []);
+
 
   useEffect(() => {
     async function run() {
@@ -74,6 +82,9 @@ export function FinalTest() {
             setRequestId(requestVoList[0].objectId);
           }
         }
+
+        let guardianCardId = await getCardByGuardianName("suiryan-hsu-test-1");
+        console.log(guardianCardId);
       }
     }
     run();
@@ -292,7 +303,7 @@ export function FinalTest() {
       <div>
         <button onClick={() => packAddGuardianTxb(
           userSuitizenCardId,
-          guardian
+          guardianName
         ).then((txb: any) => {
           if (txb) {
             signAndExecuteTransactionBlock(
@@ -324,7 +335,7 @@ export function FinalTest() {
       <div>
         <button onClick={() => packRemoveGuardianTxb(
           userSuitizenCardId,
-          guardian
+          guardianName
         ).then((txb: any) => {
           if (txb) {
             signAndExecuteTransactionBlock(

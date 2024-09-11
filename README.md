@@ -75,7 +75,7 @@ packAddGuardianTxb <br>
 ```
 Request :
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  guardianCardId: string <-- 監護人 Suitizen Card ID
+  guardianName: string <-- 監護人 Suitizen Card 名稱, firstName(固定sui) + lastName(Sui NS選定的名稱)
 
 Response :
 Transcation Block
@@ -87,7 +87,7 @@ packRemoveGuardianTxb <br>
 ```
 Request :
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  guardianCardId: string <-- 監護人 Suitizen Card ID
+  guardianName: string <-- 監護人 Suitizen Card 名稱, firstName(固定sui) + lastName(Sui NS選定的名稱)
 
 Response :
 Transcation Block

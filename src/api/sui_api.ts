@@ -417,10 +417,41 @@ export async function getInteraction(
   return interaction;
 }
 
+export async function getCardByGuardianName(guardianName: string){
+  const decoder = new TextDecoder('utf-8');
+  let objectResponse: any = await suiClient.getObject({
+    id: REGISTRY_ID,
+    options: {
+      showContent: true
+    }
+  });
+  if (objectResponse.data) {
+    console.log(objectResponse);
+    let tableId: string = objectResponse.data.content.fields.reg_tab.fields.id.id;
+    let tableVo: any = await getTableData(tableId, null, null);
+    if (tableVo.tableMap.size > 0) {
+      for (let [key, value] of tableVo.tableMap){
+        const byteArray = new Uint8Array(key);
+        let deocdeKey = decoder.decode(byteArray);
+        if (deocdeKey == guardianName){
+          return value;
+        }
+      }
+    }
+  }
+  return null;
+}
+
 export async function packAddGuardianTxb(
   cardId: string,
-  guardianCardId: string
+  guardianName: string
 ) {
+
+  let guardianCardId = await getCardByGuardianName(guardianName);
+
+  if (guardianCardId == null){
+    throw new Error(guardianName + " Not Found");
+  }
 
   let txb: TransactionBlock = new TransactionBlock();
 
@@ -442,8 +473,14 @@ export async function packAddGuardianTxb(
 
 export async function packRemoveGuardianTxb(
   cardId: string,
-  guardianCardId: string
+  guardianName: string
 ) {
+
+  let guardianCardId = await getCardByGuardianName(guardianName);
+
+  if (guardianCardId == null){
+    throw new Error(guardianName + " Not Found");
+  }
 
   let txb: TransactionBlock = new TransactionBlock();
 
@@ -618,4 +655,48 @@ export async function packTransferCardTxb(
   });
 
   return txb;
+}
+
+// 初始化 Interaction 到 firebase
+export async function initInteraction(cardId: string) {
+
+  let voteInteractionList = getInteraction(0, null, null);
+  let disscussInteractionList = getInteraction(0, null, null);
+
+  let transferRequestList = [];
+  let objectResponse: any = await suiClient.getObject({
+    id: TRANSFER_REQUEST_RECORD_ID,
+    options: {
+      showContent: true
+    }
+  });
+  if (objectResponse.data) {
+    console.log(objectResponse);
+    let tableId: string = objectResponse.data.content.fields.request_ids.fields.id.id;
+    let tableVo: any = await getTableData(tableId, null, null);
+    if (tableVo.tableMap.size > 0) {
+      if (tableVo.tableMap.has(cardId)){
+        for (let requestId of tableVo.tableMap.get(cardId)){
+          let transferShardObjectResp: any = await suiClient.getObject({
+            id: requestId,
+            options: {
+              showContent: true
+            }
+          });
+          if (transferShardObjectResp.data) {
+            console.log(transferShardObjectResp.data);
+            let requestVo: any = {};
+            requestVo.cardId = transferShardObjectResp.data.content.fields.card_id;
+            requestVo.confirmThreshold = transferShardObjectResp.data.content.fields.confirm_threshold;
+            requestVo.currentConfirm = transferShardObjectResp.data.content.fields.current_confirm;
+            requestVo.guardians = transferShardObjectResp.data.content.fields.guardians;
+            requestVo.newOwner = transferShardObjectResp.data.content.fields.new_owner;
+            requestVo.objectId = transferShardObjectResp.data.objectId;
+            transferRequestList.push(requestVo);
+          }
+        }
+      }
+    }
+  }
+  return transferRequestList;
 }
