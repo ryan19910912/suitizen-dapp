@@ -75,7 +75,7 @@ packAddGuardianTxb <br>
 ```
 Request :
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  guardianName: string <-- 監護人 Sui NS 的名稱
+  guardianName: string <-- 監護人 Sui NS 的名稱，只需要輸入 first_name
 
 Response :
 Transcation Block
@@ -87,7 +87,7 @@ packRemoveGuardianTxb <br>
 ```
 Request :
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  guardianName: string <-- 監護人 Sui NS 的名稱
+  guardianName: string <-- 監護人 Sui NS 的名稱，只需要輸入 first_name
 
 Response :
 Transcation Block
@@ -211,61 +211,80 @@ true or false
 
 // 取得 Vote & Discuss Interaction <br>
 getInteraction <br>
+pageNumber or pageSize 其中一個為 null 則會回傳全部<br>
+會依照 lastUpdate 排序，越新的會越前面
 ```
 Request:
   category: number, <-- Vote 帶 0，Discuss 帶 1
-  cursor: string | null, <-- 第一頁帶 null，回傳物件會給 nextCursor，帶入會給下一頁的資訊
-  limit: number | null <-- 可以限制一次查幾筆
+  pageNumber: number | null, <-- 頁數
+  pageSize: number | null <-- 每頁筆數
 
 Response:
 
 Vote
 {
-    "category": "0",
-    "categoryStr": "VOTE",
-    "topic": "Choose ~",
-    "description": "What do you do on holidays ?",
-    "flowNum": "0",
-    "objectId": "0x93ee358c1d49dff00c2a90b061e13768cebe1e06981180ecb028e04cea94ba85",
-    "lastUpdate": "1725986530255",
-    "options": [
+    "totalCount": 1, <-- 總數量，可以拿來做前端分頁用
+    "data": [
         {
-            "index": 0,
-            "amount": "1",
-            "content": "Eat delicious snacks"
-        },
-        {
-            "index": 1,
-            "amount": "0",
-            "content": "Play basketball"
-        },
-        {
-            "index": 2,
-            "amount": "0",
-            "content": "Watch TV"
-        },
-        {
-            "index": 3,
-            "amount": "0",
-            "content": "Play games"
+            "category": "0",
+            "categoryStr": "VOTE",
+            "topic": "Choose ~",
+            "description": "What do you do on holidays ?",
+            "flowNum": "0",
+            "host": "0x2ee108d317583a041b6367a11523a7678ef7189fd9556987e464ccfafd74489e",
+            "objectId": "0x58c57548ea699cc9712b3728eb1952e1e17a852e02ecffd83d68fa67674b2081",
+            "lastUpdate": 1726123006548,
+            "options": [
+                {
+                    "index": 0,
+                    "amount": "2",
+                    "content": "Eat delicious snacks"
+                },
+                {
+                    "index": 1,
+                    "amount": "0",
+                    "content": "Play basketball"
+                },
+                {
+                    "index": 2,
+                    "amount": "0",
+                    "content": "Watch TV"
+                },
+                {
+                    "index": 3,
+                    "amount": "0",
+                    "content": "Play games"
+                }
+            ]
         }
     ]
 }
 
 Discuss
 {
-    "category": "1",
-    "categoryStr": "DISCUSS",
-    "topic": "talk now",
-    "description": "Software engineer talks about hardships",
-    "flowNum": "0",
-    "objectId": "0x858ca8657f4b74b1b8f9b4ad6e91540eff3c5b71ad256e60e275be1407d5cb03",
-    "lastUpdate": "1725986536972",
-    "comments": [
+    "totalCount": 1,
+    "data": [
         {
-            "name": "sui ryan-hsu-1991-09-12",
-            "content": "Resign !!",
-            "sender": "0x3e37b4d2d3abe229932a68e5f5bb0987ce779f794bb45fc758bc26152ff62b4d"
+            "category": "1",
+            "categoryStr": "DISCUSS",
+            "flowNum": "0",
+            "lastUpdate": 1726123022867,
+            "objectId": "0x029e5943a71aabe24930f3360be4fd65a773769b1e4e904f305cbd241cceb97c",
+            "topic": "talk now",
+            "description": "Software engineer talks about hardships",
+            "host": "0x2ee108d317583a041b6367a11523a7678ef7189fd9556987e464ccfafd74489e",
+            "comments": [
+                {
+                    "sender": "0xc18222257c45660246ee318101ad247faa9af94db90e52ee23a38b8a0a30c774",
+                    "content": "Resign !!",
+                    "name": "ryan-hsu-test-1 sui"
+                },
+                {
+                    "name": "ryan-hsu-test sui",
+                    "content": "Resign !!",
+                    "sender": "0x2ee108d317583a041b6367a11523a7678ef7189fd9556987e464ccfafd74489e"
+                }
+            ]
         }
     ]
 }
@@ -280,7 +299,7 @@ Request :
 
 Response :
 {
-    "cardId": "0x572092b0339cdedc3c2c442d49e41957e1815c0b909acdde410d1f3f0eea63bf", <-- 該用戶的 Suitizen Card ID
+    "cardId": "0x572092b0339cdedc3c2c442d49e41957e1815c0b909acdde410d1f3f0eea63bf", <-- 發起請求的 Suitizen Card ID
     "confirmThreshold": "1", <-- 需通過票數
     "currentConfirm": "0", <-- 目前通過票數
     "guardians": [
@@ -291,3 +310,7 @@ Response :
 }
 
 ```
+
+// 刷新 Interaction 緩存資料
+refreshInteractionData <br>
+在執行完 packNewInteractionTxb、packVoteTxb、packDiscussTxb 後呼叫

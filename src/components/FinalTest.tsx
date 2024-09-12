@@ -17,7 +17,8 @@ import {
   packConfirmTxb,
   packCancelConfirmTxb,
   packTransferCardTxb,
-  getCardByGuardianName
+  getCardByGuardianName,
+  refreshInteractionData
 } from '../api/sui_api';
 import { useState, useEffect } from 'react';
 
@@ -38,8 +39,8 @@ export function FinalTest() {
 
   // TODO
   useEffect(() => {
-    // 初始化 Interaction 數據，存入 firebase
-
+    // 初始化 Interaction 緩存數據，存入 firebase
+    refreshInteractionData();
   }, []);
 
 
@@ -61,14 +62,14 @@ export function FinalTest() {
           setUserSuitizenCardId(userSuitizenCardList[0].objectId);
         }
 
-        let voteVo = await getInteraction(0, null, 2);
+        let voteVo: any = await getInteraction(0, 1, 1);
         console.log(voteVo);
         if (voteVo.data.length > 0){
           setVoteId(voteVo.data[0].objectId);
           setVoteOptionNum(voteVo.data[0].options[0].index);
         }
 
-        let discussVo = await getInteraction(1, null, 2);
+        let discussVo: any = await getInteraction(1, 1, 1);
         console.log(discussVo);
         if (discussVo.data.length > 0){
           setDiscussId(discussVo.data[0].objectId);
@@ -95,10 +96,10 @@ export function FinalTest() {
       <div>
         <button onClick={() => packMintTxb(
           userNsId,
-          3,
-          "1ztpOD7U5VChSoTpMlLZPQrjo9ETTjtt1bgWS3UoxIY",
-          "1ztpOD7U5VChSoTpMlLZPQrjo9ETTjtt1bgWS3UoxIY",
-          "1ztpOD7U5VChSoTpMlLZPQrjo9ETTjtt1bgWS3UoxIY",
+          0,
+          "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
+          "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
+          "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
           Date.now()
         ).then((txb: any) => {
           if (txb) {
