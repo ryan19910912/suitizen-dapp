@@ -12,6 +12,7 @@ Request :
   cardImg: string, <-- walrus blobId
   faceFeature: string <-- walrus blobId
   birth: number <-- 生日(timestamp 毫秒)
+  backup: string <-- 備用錢包地址
 
 Response :
 Transcation Block
@@ -70,86 +71,13 @@ Transcation Block
 
 ```
 
-// 新增 監護人 <br>
-packAddGuardianTxb <br>
-```
-Request :
-  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  guardianName: string <-- 監護人 Sui NS 的名稱，只需要輸入 first_name
-
-Response :
-Transcation Block
-
-```
-
-// 移除 監護人 <br>
-packRemoveGuardianTxb <br>
-```
-Request :
-  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  guardianName: string <-- 監護人 Sui NS 的名稱，只需要輸入 first_name
-
-Response :
-Transcation Block
-
-```
-
-// 建立 轉移 Suitizen Card Owner 請求<br>
-packNewTransferRequestTxb <br>
-```
-Request :
-  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  newOwnerAddress: string <-- 轉移 Suitizen Card 給該 新Owner地址
-
-Response :
-Transcation Block
-
-```
-
-// 取消 轉移 Suitizen Card Owner 請求<br>
-packCancelTransferRequestTxb <br>
-```
-Request :
-  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  requestId: string <-- getTransferRequestList 清單裡面的 objectId
-
-Response :
-Transcation Block
-
-```
-
-// 監護人 確認 轉移 Suitizen Card Owner 請求<br>
-packConfirmTxb <br>
-```
-Request :
-  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  requestId: string <-- getTransferRequestList 清單裡面的 objectId
-
-Response :
-Transcation Block
-
-```
-
-// 監護人 反對 轉移 Suitizen Card Owner 請求<br>
-packCancelConfirmTxb <br>
-```
-Request :
-  cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  requestId: string <-- getTransferRequestList 清單裡面的 objectId
-
-Response :
-Transcation Block
-
-```
-
-// 轉移 Suitizen Card 給 新 owner<br>
+// 轉移 Suitizen Card 給 backup<br>
 packTransferCardTxb <br>
 ```
-當 currentConfirm (目前通過票數) >= confirmThreshold (需通過票數)
 
 Request :
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  requestId: string <-- getTransferRequestList 清單裡面的 objectId
+  newBackup: string <-- 新的 備用錢包地址
 
 Response :
 Transcation Block
@@ -190,9 +118,7 @@ Response :
     "firstName": "sui",
     "lastName": "ryan-hsu-test",
     "birth": "1725985950997",
-    "guardians": [
-        "0x3e37b4d2d3abe229932a68e5f5bb0987ce779f794bb45fc758bc26152ff62b4d"
-    ]
+    "backup": "0x3e37b4d2d3abe229932a68e5f5bb0987ce779f794bb45fc758bc26152ff62b4d"
   }
 ]
 
@@ -291,30 +217,9 @@ Discuss
 
 ```
 
-// 取得 Suitizen Card 轉移請求 清單 <br>
-getTransferRequestList <br>
-```
-Request :
-  cardId: string <-- 該用戶的 Suitizen Card ID
-  type: number <-- 0: 查自己發起的請求, 1: 查自己為監護人待核准的請求
-Response :
-{
-    "cardId": "0x572092b0339cdedc3c2c442d49e41957e1815c0b909acdde410d1f3f0eea63bf", <-- 發起請求的 Suitizen Card ID
-    "confirmThreshold": "1", <-- 需通過票數
-    "currentConfirm": "0", <-- 目前通過票數
-    "guardians": [
-        "0x3e37b4d2d3abe229932a68e5f5bb0987ce779f794bb45fc758bc26152ff62b4d" <-- 監護人 card id
-    ],
-    "newOwner": "0xe20abce08a16e397ec368979b03bb6323d42605b38c6bd9b6a983c6ebcc45e11", <-- 新 owner address
-    "objectId": "0x64b5c21f35024bc6046fad46f58f41a121558756ba2aead65574b86e46c8ec7c" <-- 該物件的 object id
-}
-
-```
-
 // 刷新 Interaction 緩存資料
 refreshInteractionData <br>
 在執行完 packNewInteractionTxb、packVoteTxb、packDiscussTxb 後呼叫
-
 
 // 取得 CardId By Name
 getCarIddByName

@@ -9,13 +9,6 @@ import {
   getUserSuitizenCard,
   getInteraction,
   packTakeUserSuiNsTxb,
-  packAddGuardianTxb,
-  packRemoveGuardianTxb,
-  packNewTransferRequestTxb,
-  getTransferRequestList,
-  packCancelTransferRequestTxb,
-  packConfirmTxb,
-  packCancelConfirmTxb,
   packTransferCardTxb,
   getCarIddByName,
   refreshInteractionData
@@ -31,7 +24,8 @@ export function FinalTest() {
   let [discussId, setDiscussId] = useState("");
   let [discussContent, setDiscussContent] = useState("");
   let [guardianName, setGuardianName] = useState("ryan-hsu-test");
-  let [newOwner, setNewOwner] = useState("0xe20abce08a16e397ec368979b03bb6323d42605b38c6bd9b6a983c6ebcc45e11");
+  let [backup, setBackup] = useState("0x3f6d4ea4364d4e6047108c25da3d55cc37b57d1cfbe2e7483d6ad059354ca175");
+  let [newBackup, setNewBackup] = useState("0xe20abce08a16e397ec368979b03bb6323d42605b38c6bd9b6a983c6ebcc45e11");
   let [requestId, setRequestId] = useState("");
 
   const account = useCurrentAccount();
@@ -76,16 +70,6 @@ export function FinalTest() {
           setDiscussContent("Resign !!");
         }
 
-        if (userSuitizenCardList.length > 0){
-          let requestVoList = await getTransferRequestList(userSuitizenCardList[0].objectId, 0);
-          console.log(requestVoList);
-          if (requestVoList.length > 0){
-            setRequestId(requestVoList[0].objectId);
-          }
-          let guadrianRequestVoList = await getTransferRequestList(userSuitizenCardList[0].objectId, 1);
-          console.log(guadrianRequestVoList);
-        }
-
         let guardianCardId = await getCarIddByName("ryan-hsu-test-1");
         console.log(guardianCardId);
       }
@@ -98,11 +82,12 @@ export function FinalTest() {
       <div>
         <button onClick={() => packMintTxb(
           userNsId,
-          1,
-          "fpb_jd4HJ5L2XkPnk1DQ20UvR015WQ8O0XjbjXBXRcc",
-          "fpb_jd4HJ5L2XkPnk1DQ20UvR015WQ8O0XjbjXBXRcc",
-          "fpb_jd4HJ5L2XkPnk1DQ20UvR015WQ8O0XjbjXBXRcc",
-          Date.now()
+          0,
+          "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
+          "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
+          "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
+          Date.now(),
+          backup
         ).then((txb: any) => {
           if (txb) {
             signAndExecuteTransactionBlock(
@@ -303,7 +288,7 @@ export function FinalTest() {
           Take User Sui Ns
         </button>
       </div>
-      <div>
+      {/* <div>
         <button onClick={() => packAddGuardianTxb(
           userSuitizenCardId,
           guardianName
@@ -494,11 +479,11 @@ export function FinalTest() {
         })}>
           Cancel Confirm
         </button>
-      </div>
+      </div> */}
       <div>
         <button onClick={() => packTransferCardTxb(
           userSuitizenCardId,
-          requestId
+          newBackup
         ).then((txb: any) => {
           if (txb) {
             signAndExecuteTransactionBlock(
