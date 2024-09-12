@@ -291,12 +291,12 @@ Discuss
 
 ```
 
-// 取得 該用戶所有提交的 Suitizen Card 轉移請求 清單 <br>
+// 取得 Suitizen Card 轉移請求 清單 <br>
 getTransferRequestList <br>
 ```
 Request :
   cardId: string <-- 該用戶的 Suitizen Card ID
-
+  type: number <-- 0: 查自己發起的請求, 1: 查自己為監護人待核准的請求
 Response :
 {
     "cardId": "0x572092b0339cdedc3c2c442d49e41957e1815c0b909acdde410d1f3f0eea63bf", <-- 發起請求的 Suitizen Card ID
@@ -314,3 +314,13 @@ Response :
 // 刷新 Interaction 緩存資料
 refreshInteractionData <br>
 在執行完 packNewInteractionTxb、packVoteTxb、packDiscussTxb 後呼叫
+
+
+// 取得 CardId By Name
+getCarIddByName
+```
+Request:
+  name: string <-- 名稱
+Response:
+  cardId: string <-- Suitizen Card ID
+```

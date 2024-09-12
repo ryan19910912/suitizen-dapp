@@ -372,7 +372,8 @@ export async function getInteraction(
   }
 }
 
-export async function getCardByGuardianName(guardianName: string) {
+export async function getCarIddByName(name: string) {
+  let realName = name + 'sui';
   const decoder = new TextDecoder('utf-8');
   let objectResponse: any = await suiClient.getObject({
     id: REGISTRY_ID,
@@ -388,7 +389,7 @@ export async function getCardByGuardianName(guardianName: string) {
       for (let [key, value] of tableVo.tableMap) {
         const byteArray = new Uint8Array(key);
         let deocdeKey = decoder.decode(byteArray);
-        if (deocdeKey == guardianName) {
+        if (deocdeKey == realName) {
           return value;
         }
       }
@@ -402,7 +403,7 @@ export async function packAddGuardianTxb(
   guardianName: string
 ) {
 
-  let guardianCardId = await getCardByGuardianName(guardianName + "sui");
+  let guardianCardId = await getCarIddByName(guardianName);
 
   if (guardianCardId == null) {
     throw new Error(guardianName + " Not Found");
@@ -431,7 +432,7 @@ export async function packRemoveGuardianTxb(
   guardianName: string
 ) {
 
-  let guardianCardId = await getCardByGuardianName(guardianName + "sui");
+  let guardianCardId = await getCarIddByName(guardianName);
 
   if (guardianCardId == null) {
     throw new Error(guardianName + " Not Found");
@@ -479,7 +480,11 @@ export async function packNewTransferRequestTxb(
   return txb;
 }
 
-export async function getTransferRequestList(cardId: string) {
+export async function getTransferRequestList(
+  cardId: string,
+  type: number
+) {
+
   let transferRequestList = [];
   let objectResponse: any = await suiClient.getObject({
     id: TRANSFER_REQUEST_RECORD_ID,
@@ -489,35 +494,19 @@ export async function getTransferRequestList(cardId: string) {
   });
   if (objectResponse.data) {
     console.log(objectResponse);
-    let tableId: string = objectResponse.data.content.fields.request_ids.fields.id.id;
+    let tableId: string = "";
+    if (type == 0){
+      // 查自己發起的請求
+      tableId = objectResponse.data.content.fields.requester_to_requests.fields.id.id;
+    } else {
+      // 查別人發起，自己是監護人的請求
+      tableId = objectResponse.data.content.fields.guardian_to_requests.fields.id.id;
+    }
     let tableVo: any = await getTableData(tableId, null, null);
-    if (tableVo.tableMap.size > 0) {
-      if (tableVo.tableMap.has(cardId)) {
-        // 是發起者
-        for (let requestId of tableVo.tableMap.get(cardId)) {
-          let transferShardObjectResp: any = await suiClient.getObject({
-            id: requestId,
-            options: {
-              showContent: true
-            }
-          });
-          if (transferShardObjectResp.data) {
-            console.log(transferShardObjectResp.data);
-            let requestVo: any = {};
-            requestVo.cardId = transferShardObjectResp.data.content.fields.card_id;
-            requestVo.confirmThreshold = transferShardObjectResp.data.content.fields.confirm_threshold;
-            requestVo.currentConfirm = transferShardObjectResp.data.content.fields.current_confirm;
-            requestVo.guardians = transferShardObjectResp.data.content.fields.guardians;
-            requestVo.newOwner = transferShardObjectResp.data.content.fields.new_owner;
-            requestVo.objectId = transferShardObjectResp.data.objectId;
-            transferRequestList.push(requestVo);
-          }
-        }
-      } else {
-        // 查看是否為監護人
-        for (let [key, requestIds] of tableVo.tableMap) {
-          for (let requestId of requestIds) {
-            console.log(requestId);
+      if (tableVo.tableMap.size > 0) {
+        if (tableVo.tableMap.has(cardId)) {
+          // 是發起者
+          for (let requestId of tableVo.tableMap.get(cardId)) {
             let transferShardObjectResp: any = await suiClient.getObject({
               id: requestId,
               options: {
@@ -533,15 +522,11 @@ export async function getTransferRequestList(cardId: string) {
               requestVo.guardians = transferShardObjectResp.data.content.fields.guardians;
               requestVo.newOwner = transferShardObjectResp.data.content.fields.new_owner;
               requestVo.objectId = transferShardObjectResp.data.objectId;
-              if (requestVo.guardians.includes(cardId)) {
-                // 是監護人
-                transferRequestList.push(requestVo);
-              }
+              transferRequestList.push(requestVo);
             }
           }
         }
       }
-    }
   }
   return transferRequestList;
 }

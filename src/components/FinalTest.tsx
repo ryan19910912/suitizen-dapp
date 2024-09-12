@@ -17,7 +17,7 @@ import {
   packConfirmTxb,
   packCancelConfirmTxb,
   packTransferCardTxb,
-  getCardByGuardianName,
+  getCarIddByName,
   refreshInteractionData
 } from '../api/sui_api';
 import { useState, useEffect } from 'react';
@@ -30,7 +30,7 @@ export function FinalTest() {
   let [voteOptionNum, setVoteOptionNum] = useState(1);
   let [discussId, setDiscussId] = useState("");
   let [discussContent, setDiscussContent] = useState("");
-  let [guardianName, setGuardianName] = useState("ryan-hsu-test-1");
+  let [guardianName, setGuardianName] = useState("ryan-hsu-test");
   let [newOwner, setNewOwner] = useState("0xe20abce08a16e397ec368979b03bb6323d42605b38c6bd9b6a983c6ebcc45e11");
   let [requestId, setRequestId] = useState("");
 
@@ -77,14 +77,16 @@ export function FinalTest() {
         }
 
         if (userSuitizenCardList.length > 0){
-          let requestVoList = await getTransferRequestList(userSuitizenCardList[0].objectId);
+          let requestVoList = await getTransferRequestList(userSuitizenCardList[0].objectId, 0);
           console.log(requestVoList);
           if (requestVoList.length > 0){
             setRequestId(requestVoList[0].objectId);
           }
+          let guadrianRequestVoList = await getTransferRequestList(userSuitizenCardList[0].objectId, 1);
+          console.log(guadrianRequestVoList);
         }
 
-        let guardianCardId = await getCardByGuardianName("suiryan-hsu-test-1");
+        let guardianCardId = await getCarIddByName("ryan-hsu-test-1");
         console.log(guardianCardId);
       }
     }
@@ -96,10 +98,10 @@ export function FinalTest() {
       <div>
         <button onClick={() => packMintTxb(
           userNsId,
-          0,
-          "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
-          "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
-          "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
+          1,
+          "fpb_jd4HJ5L2XkPnk1DQ20UvR015WQ8O0XjbjXBXRcc",
+          "fpb_jd4HJ5L2XkPnk1DQ20UvR015WQ8O0XjbjXBXRcc",
+          "fpb_jd4HJ5L2XkPnk1DQ20UvR015WQ8O0XjbjXBXRcc",
           Date.now()
         ).then((txb: any) => {
           if (txb) {
