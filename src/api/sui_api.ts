@@ -52,7 +52,7 @@ export async function packMintTxb(
   cardImg: string,
   faceFeature: string,
   birth: number,
-  backups: string[]
+  backup: string[]
 ) {
 
   let txb: TransactionBlock = new TransactionBlock();
@@ -68,7 +68,7 @@ export async function packMintTxb(
     txb.pure.string(faceFeature),
     txb.pure.u64(birth),
     txb.splitCoins(txb.gas, [txb.pure(0.1 * SUI_COIN_DECIMAL)]),
-    txb.pure(backups),
+    txb.pure(backup),
     txb.object(SUI_CLOCK_ID)
   ];
 

@@ -12,7 +12,7 @@ Request :
   cardImg: string, <-- walrus blobId
   faceFeature: string <-- walrus blobId
   birth: number <-- 生日(timestamp 毫秒)
-  backup: string <-- 備用錢包地址
+  backup: Array<string> <-- 備用錢包地址清單
 
 Response :
 Transcation Block
@@ -77,7 +77,7 @@ packTransferCardTxb <br>
 
 Request :
   cardId: string, <-- packMintTxb 執行完後 呼叫 getUserSuitizenCard，回傳物件內的 objectId 欄位
-  newBackup: string <-- 新的 備用錢包地址
+  index: number <-- 備用錢包地址 索引
 
 Response :
 Transcation Block
@@ -118,7 +118,7 @@ Response :
     "firstName": "sui",
     "lastName": "ryan-hsu-test",
     "birth": "1725985950997",
-    "backup": "0x3e37b4d2d3abe229932a68e5f5bb0987ce779f794bb45fc758bc26152ff62b4d"
+    "backup": ["0x3e37b4d2d3abe229932a68e5f5bb0987ce779f794bb45fc758bc26152ff62b4d"]
   }
 ]
 
