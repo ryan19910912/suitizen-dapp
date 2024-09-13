@@ -52,7 +52,7 @@ export async function packMintTxb(
   cardImg: string,
   faceFeature: string,
   birth: number,
-  backup: string
+  backups: string[]
 ) {
 
   let txb: TransactionBlock = new TransactionBlock();
@@ -68,7 +68,7 @@ export async function packMintTxb(
     txb.pure.string(faceFeature),
     txb.pure.u64(birth),
     txb.splitCoins(txb.gas, [txb.pure(0.1 * SUI_COIN_DECIMAL)]),
-    txb.pure.address(backup),
+    txb.pure(backups),
     txb.object(SUI_CLOCK_ID)
   ];
 
@@ -606,7 +606,7 @@ export async function getCarIddByName(name: string) {
 
 export async function packTransferCardTxb(
   cardId: string,
-  newBackup: string
+  index: number
 ) {
 
   let txb: TransactionBlock = new TransactionBlock();
@@ -614,7 +614,7 @@ export async function packTransferCardTxb(
   let args: TransactionArgument[] = [
     txb.object(GLOBAL_CONFIG_ID),
     txb.object(cardId),
-    txb.pure.address(newBackup)
+    txb.pure.u64(index)
   ];
 
   console.log(args);

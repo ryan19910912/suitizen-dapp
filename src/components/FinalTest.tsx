@@ -24,8 +24,8 @@ export function FinalTest() {
   let [discussId, setDiscussId] = useState("");
   let [discussContent, setDiscussContent] = useState("");
   let [guardianName, setGuardianName] = useState("ryan-hsu-test");
-  let [backup, setBackup] = useState("0x3f6d4ea4364d4e6047108c25da3d55cc37b57d1cfbe2e7483d6ad059354ca175");
-  let [newBackup, setNewBackup] = useState("0xe20abce08a16e397ec368979b03bb6323d42605b38c6bd9b6a983c6ebcc45e11");
+  let [backups, setBackups] = useState(["0xe20abce08a16e397ec368979b03bb6323d42605b38c6bd9b6a983c6ebcc45e11"]);
+  let [newBackup, setNewBackup] = useState("0x3f6d4ea4364d4e6047108c25da3d55cc37b57d1cfbe2e7483d6ad059354ca175");
   let [requestId, setRequestId] = useState("");
 
   const account = useCurrentAccount();
@@ -87,7 +87,7 @@ export function FinalTest() {
           "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
           "SSY-NodrATL7mY3dKDg-5erH4-uajcXP9kWF-l-C_Y4",
           Date.now(),
-          backup
+          backups
         ).then((txb: any) => {
           if (txb) {
             signAndExecuteTransactionBlock(
@@ -483,7 +483,7 @@ export function FinalTest() {
       <div>
         <button onClick={() => packTransferCardTxb(
           userSuitizenCardId,
-          newBackup
+          0
         ).then((txb: any) => {
           if (txb) {
             signAndExecuteTransactionBlock(
