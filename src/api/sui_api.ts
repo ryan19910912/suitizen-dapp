@@ -10,7 +10,7 @@ const REGISTRY_ID: string = `${import.meta.env.VITE_REGISTRY_ID}`;
 const INTERACTION_RECORD_ID: string = `${import.meta.env.VITE_INTERACTION_RECORD_ID}`;
 const TREASURY_ID: string = `${import.meta.env.VITE_TREASURY_ID}`;
 const TYPE_DICT_ID: string = `${import.meta.env.VITE_TYPE_DICT_ID}`;
-const TRANSFER_REQUEST_RECORD_ID: string = `${import.meta.env.VITE_TRANSFER_REQUEST_RECORD}`;
+
 
 const SUITIZEN_MODULE: string = "suitizen";
 const INTERACTION_MODULE: string = "interaction";
@@ -20,13 +20,8 @@ const NEW_INTERACTION_FUN: string = "new_interaction";
 const VOTE_FUN: string = "vote";
 const DISCUSS_FUN: string = "discuss";
 const TAKE_SUI_NS_FUN: string = "take_sui_ns";
-const NEW_TRANSFER_REQUEST_FUN: string = "new_transfer_request";
-const CANCEL_TRANSFER_REQUEST_FUN: string = "cancel_transfer_request";
-const CONFIRM_FUN: string = "confirm";
-const CANCEL_CONFIRM_FUN: string = "cancel_confirm";
+
 const TRANSFER_CARD_FUN: string = "transfer_card";
-const ADD_GUARDIAN_FUN: string = "add_guardian";
-const REMOVE_GUARDIAN_FUN: string = "remove_guardian";
 
 const SUI_CLOCK_ID: string = "0x6";
 const SUI_NS_TYPE = `${import.meta.env.VITE_SUI_NS_TYPE}`;
@@ -37,7 +32,6 @@ const suiClient = new SuiClient({
   url: `${import.meta.env.VITE_SUI_NETWORK_URL}`,
 });
 
-const FIREBASE_ENV: string = `${import.meta.env.VITE_FIREBASE_ENV}`;
 const FIREBASE_CONFIG: string = `${import.meta.env.VITE_FIREBASE_CONFIG}`;
 
 const FIREBASE_APP = initializeApp(JSON.parse(FIREBASE_CONFIG));
@@ -663,7 +657,7 @@ export async function refreshInteractionData() {
     let voteList: any[] = [];
     let discussList: any[] = [];
 
-    for (let [key, value] of voteTableVo.tableMap) {
+    for (let [value] of voteTableVo.tableMap) {
       let dataResponse: any = await suiClient.getObject({
         id: value,
         options: {
@@ -716,7 +710,7 @@ export async function refreshInteractionData() {
       }
     }
 
-    for (let [key, value] of discussTableVo.tableMap) {
+    for (let [value] of discussTableVo.tableMap) {
       let dataResponse: any = await suiClient.getObject({
         id: value,
         options: {
